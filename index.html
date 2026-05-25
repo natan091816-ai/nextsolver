@@ -5,281 +5,335 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NextSolver — AI-Powered Captcha Solving API</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="style.css">
+<style>
+:root{--bg:#06060f;--bg2:#0c0c1d;--bg3:#13132b;--border:#1e1e40;--text:#e8e8f0;--text2:#8888aa;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--cyan:#06b6d4;--orange:#f97316}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+a{color:var(--accent2);text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,6,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.logo i{color:var(--accent2);font-size:1.4rem}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{color:var(--text2);font-size:.85rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--accent);color:#fff!important;padding:8px 20px;border-radius:8px;font-weight:600;font-size:.85rem;transition:all .2s}
+.nav-cta:hover{background:var(--accent2);transform:translateY(-1px)}
+.hero{padding:140px 40px 80px;text-align:center;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(99,102,241,.12) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:100px;padding:6px 18px;font-size:.78rem;color:var(--accent2);margin-bottom:24px;font-weight:500}
+.hero-badge i{font-size:.7rem}
+.hero h1{font-size:3.5rem;font-weight:800;line-height:1.15;margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto}
+.hero h1 .gradient{background:linear-gradient(135deg,var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.15rem;color:var(--text2);max-width:600px;margin:0 auto 36px;line-height:1.8}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:#fff;padding:14px 32px;border-radius:10px;font-weight:600;font-size:.95rem;display:inline-flex;align-items:center;gap:8px;transition:all .2s;border:none;cursor:pointer}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.3)}
+.btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:10px;font-weight:600;font-size:.95rem;border:1px solid var(--border);display:inline-flex;align-items:center;gap:8px;transition:all .2s;cursor:pointer}
+.btn-secondary:hover{border-color:var(--accent);background:rgba(99,102,241,.05)}
+.stats{display:flex;justify-content:center;gap:48px;padding:40px 0 60px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .val{font-size:2.2rem;font-weight:800;color:var(--green)}
+.stat .val.accent{color:var(--accent2)}
+.stat .val.cyan{color:var(--cyan)}
+.stat .lbl{font-size:.78rem;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+section{padding:80px 40px;max-width:1100px;margin:0 auto}
+.section-title{font-size:2rem;font-weight:700;text-align:center;margin-bottom:12px}
+.section-desc{text-align:center;color:var(--text2);font-size:1rem;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto}
+.captcha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px}
+.captcha-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
+.captcha-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 40px rgba(99,102,241,.1)}
+.captcha-card .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.captcha-card .card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.captcha-card .card-icon.waf{background:rgba(34,197,94,.12);color:var(--green)}
+.captcha-card .card-icon.text{background:rgba(6,182,212,.12);color:var(--cyan)}
+.captcha-card .card-icon.math{background:rgba(234,179,8,.12);color:var(--yellow)}
+.captcha-card .card-icon.friendly{background:rgba(129,140,248,.12);color:var(--accent2)}
+.captcha-card .card-icon.audio{background:rgba(249,115,22,.12);color:var(--orange)}
+.captcha-card .card-icon.recaptcha{background:rgba(239,68,68,.12);color:var(--red)}
+.card-badge{font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px}
+.badge-live{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.badge-beta{background:rgba(234,179,8,.12);color:var(--yellow);border:1px solid rgba(234,179,8,.2)}
+.captcha-card h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
+.captcha-card .card-desc{font-size:.82rem;color:var(--text2);margin-bottom:16px;line-height:1.6}
+.card-stats{display:flex;gap:20px}
+.card-stat{font-size:.78rem}
+.card-stat span{color:var(--text2)}
+.card-stat b{color:var(--text)}
+.demo{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-width:700px;margin:0 auto}
+.demo-header{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-dot.r{background:#ef4444}.demo-dot.y{background:#eab308}.demo-dot.g{background:#22c55e}
+.demo-title{font-size:.75rem;color:var(--text2);margin-left:8px;font-family:'JetBrains Mono',monospace}
+pre{padding:24px;overflow-x:auto;margin:0}
+pre code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.8;color:var(--text)}
+.c{color:#555}.k{color:var(--accent2)}.s{color:#a5d6ff}.n{color:var(--yellow)}.b{color:var(--cyan)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.price-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;transition:all .3s}
+.price-card.featured{border-color:var(--accent);position:relative}
+.price-card.featured::before{content:'POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:.65rem;font-weight:700;padding:4px 16px;border-radius:100px;letter-spacing:1px}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(99,102,241,.1)}
+.price-card h3{font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.price-card .price{font-size:2.5rem;font-weight:800;margin:16px 0}
+.price-card .price span{font-size:.9rem;font-weight:400;color:var(--text2)}
+.price-card .price-desc{font-size:.82rem;color:var(--text2);margin-bottom:24px}
+.price-card ul{list-style:none;text-align:left;margin-bottom:24px}
+.price-card li{font-size:.85rem;padding:8px 0;color:var(--text2);display:flex;align-items:center;gap:10px}
+.price-card li i{color:var(--green);font-size:.75rem}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feature{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;transition:all .3s}
+.feature:hover{border-color:var(--accent);transform:translateY(-2px)}
+.feature i{font-size:1.5rem;color:var(--accent2);margin-bottom:16px}
+.feature h3{font-size:1rem;font-weight:600;margin-bottom:8px}
+.feature p{font-size:.82rem;color:var(--text2);line-height:1.6}
+footer{border-top:1px solid var(--border);padding:40px;text-align:center}
+footer p{font-size:.8rem;color:var(--text2)}
+@media(max-width:768px){
+.hero h1{font-size:2.2rem}
+.nav-links{display:none}
+.features-grid{grid-template-columns:1fr}
+.captcha-grid{grid-template-columns:1fr}
+.stats{gap:24px}
+section{padding:60px 20px}
+}
+</style>
 </head>
 <body>
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
-<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
 <nav>
-  <div class="nav-inner">
-    <div class="logo"><i class="fa-solid fa-bolt logo-icon"></i> NextSolver</div>
-    <div class="links">
-      <a href="#features">Features</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#supported">Captchas</a>
-      <a href="https://strangerchk.online/docs-api" target="_blank">Docs</a>
-    </div>
-    <a href="#contact" class="nav-cta">Get API Key <i class="fa-solid fa-arrow-right"></i></a>
-    <button class="mobile-menu" onclick="document.querySelector('.links').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
+  <div class="logo"><i class="fa-solid fa-bolt"></i> NextSolver</div>
+  <div class="nav-links">
+    <a href="#captchas">Captchas</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/docs-api">API Docs</a>
+    <a href="#contact" class="nav-cta">Get Started</a>
   </div>
 </nav>
 
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge"><span class="badge-dot"></span><span>v2.0 — Serving 1M+ solves/month</span></div>
-    <h1>
-      <span class="hero-line">Stop paying</span>
-      <span class="hero-line"><span class="gradient-text">$3/1000</span> for captchas.</span>
-    </h1>
-    <p class="hero-desc">NextSolver's proprietary AI solves AWS WAF captchas in <strong>under 50ms</strong> with <strong>97% accuracy</strong>. Same API format you already use — just swap the URL.</p>
-    <div class="hero-actions">
-      <a href="#pricing" class="btn btn-glow"><span class="btn-shine"></span><i class="fa-solid fa-bolt"></i> Start Solving — From $0.003/solve</a>
-      <a href="https://strangerchk.online/docs-api" target="_blank" class="btn btn-ghost"><i class="fa-solid fa-book"></i> View API Docs</a>
-    </div>
-    <div class="live-stats">
-      <div class="live-stat"><div class="live-indicator"></div><span class="live-label">Solves today:</span><span class="live-value" id="solves-counter">12,847</span></div>
-      <div class="live-stat"><span class="live-label">Avg response:</span><span class="live-value highlight">47ms</span></div>
-      <div class="live-stat"><span class="live-label">Success rate:</span><span class="live-value highlight-green">97.2%</span></div>
-    </div>
+  <div class="hero-badge"><i class="fa-solid fa-circle-check"></i> 7 Captcha Types Supported — 100% Local AI</div>
+  <h1>Solve any captcha<br>in <span class="gradient">milliseconds</span></h1>
+  <p>NextSolver's proprietary AI models run entirely on our infrastructure. No third-party APIs, no per-solve fees from external services. Just raw speed and accuracy.</p>
+  <div class="hero-btns">
+    <a href="/docs-api" class="btn-primary"><i class="fa-solid fa-book"></i> View Documentation</a>
+    <a href="#pricing" class="btn-secondary"><i class="fa-solid fa-tags"></i> See Pricing</a>
   </div>
-  <div class="hero-visual">
-    <div class="terminal">
-      <div class="terminal-bar"><div class="terminal-dots"><span></span><span></span><span></span></div><span class="terminal-title">Terminal — solve.py</span></div>
-      <div class="terminal-body">
-        <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">python solve.py</span></div>
-        <div class="term-line term-output"><i class="fa-solid fa-magnifying-glass" style="color:var(--cyan)"></i> Sending 6 tiles to NextSolver...</div>
-        <div class="term-line term-output"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> <span class="term-green">Solved in 47ms</span> — [false, true, false, false, true, false]</div>
-        <div class="term-line term-output"><i class="fa-solid fa-coins" style="color:var(--yellow)"></i> Credits remaining: <span class="term-yellow">4,953</span></div>
-        <div class="term-line"><span class="term-prompt">$</span> <span class="term-cursor">|</span></div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="val">~50ms</div><div class="lbl">Avg Response</div></div>
+  <div class="stat"><div class="val accent">97%</div><div class="lbl">WAF Accuracy</div></div>
+  <div class="stat"><div class="val cyan">7</div><div class="lbl">Captcha Types</div></div>
+  <div class="stat"><div class="val">100%</div><div class="lbl">Local AI</div></div>
+</div>
+
+<section id="captchas">
+  <h2 class="section-title">Supported Captcha Types</h2>
+  <p class="section-desc">From image grids to proof-of-work puzzles — we solve them all with our own AI models.</p>
+  <div class="captcha-grid">
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon waf"><i class="fa-solid fa-shield-halved"></i></div>
+        <span class="card-badge badge-live"><i class="fa-solid fa-circle" style="font-size:.4rem;vertical-align:middle"></i> Live</span>
+      </div>
+      <h3>AWS WAF Grid</h3>
+      <p class="card-desc">Amazon's image grid captcha. Select tiles containing specific objects from a grid. 13 object classes supported.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>97%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>~50ms</b></div>
+        <div class="card-stat"><span>Task</span> <b>AwsWafClassification</b></div>
+      </div>
+    </div>
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon text"><i class="fa-solid fa-font"></i></div>
+        <span class="card-badge badge-live"><i class="fa-solid fa-circle" style="font-size:.4rem;vertical-align:middle"></i> Live</span>
+      </div>
+      <h3>Text / Image CAPTCHA</h3>
+      <p class="card-desc">Distorted text recognition using multi-engine OCR with voting. Handles noise, rotation, and overlapping characters.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>100%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>~120ms</b></div>
+        <div class="card-stat"><span>Task</span> <b>ImageToTextTask</b></div>
+      </div>
+    </div>
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon math"><i class="fa-solid fa-calculator"></i></div>
+        <span class="card-badge badge-live"><i class="fa-solid fa-circle" style="font-size:.4rem;vertical-align:middle"></i> Live</span>
+      </div>
+      <h3>Math CAPTCHA</h3>
+      <p class="card-desc">Arithmetic expression solving. Supports addition, subtraction, multiplication, division, and complex expressions.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>100%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>~1ms</b></div>
+        <div class="card-stat"><span>Task</span> <b>MathCaptcha</b></div>
+      </div>
+    </div>
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon friendly"><i class="fa-solid fa-puzzle-piece"></i></div>
+        <span class="card-badge badge-live"><i class="fa-solid fa-circle" style="font-size:.4rem;vertical-align:middle"></i> Live</span>
+      </div>
+      <h3>FriendlyCaptcha</h3>
+      <p class="card-desc">Proof-of-work puzzle solving. Computes cryptographic challenges (blake2b) without any user interaction needed.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>100%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>~490ms</b></div>
+        <div class="card-stat"><span>Task</span> <b>FriendlyCaptchaTaskProxyless</b></div>
+      </div>
+    </div>
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon audio"><i class="fa-solid fa-headphones"></i></div>
+        <span class="card-badge badge-live"><i class="fa-solid fa-circle" style="font-size:.4rem;vertical-align:middle"></i> Live</span>
+      </div>
+      <h3>Audio CAPTCHA</h3>
+      <p class="card-desc">Speech-to-text recognition for audio challenges. Supports digits, NATO alphabet, and natural language audio.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>100%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>~630ms</b></div>
+        <div class="card-stat"><span>Task</span> <b>AudioTask</b></div>
+      </div>
+    </div>
+    <div class="captcha-card">
+      <div class="card-header">
+        <div class="card-icon recaptcha"><i class="fa-solid fa-robot"></i></div>
+        <span class="card-badge badge-beta"><i class="fa-solid fa-flask" style="font-size:.5rem;vertical-align:middle"></i> Beta</span>
+      </div>
+      <h3>reCAPTCHA v2</h3>
+      <p class="card-desc">Google's image grid challenge. Server-side token solving with Playwright stealth browser. 11 object classes trained.</p>
+      <div class="card-stats">
+        <div class="card-stat"><span>Accuracy</span> <b>82%</b></div>
+        <div class="card-stat"><span>Speed</span> <b>15-45s</b></div>
+        <div class="card-stat"><span>Task</span> <b>ReCaptchaV2TaskProxyless</b></div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="comparison" class="section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-chart-bar"></i> Compare</div>
-    <h2 class="section-title">Why developers switch to NextSolver</h2>
-  </div>
-  <div class="comparison-table">
-    <table>
-      <thead><tr><th>Feature</th><th>Others</th><th class="highlight-col">NextSolver</th></tr></thead>
-      <tbody>
-        <tr><td>AWS WAF Grid</td><td>$2-3 / 1,000</td><td class="highlight-col"><strong>$0.003 / solve</strong></td></tr>
-        <tr><td>Response Time</td><td>2-8 seconds</td><td class="highlight-col"><strong>&lt;50ms</strong> <i class="fa-solid fa-bolt fa-xs"></i></td></tr>
-        <tr><td>Accuracy</td><td>85-92%</td><td class="highlight-col"><strong>97%</strong> <i class="fa-solid fa-bullseye fa-xs"></i></td></tr>
-        <tr><td>API Format</td><td>Proprietary</td><td class="highlight-col"><strong>Drop-in compatible</strong></td></tr>
-        <tr><td>Credits Expiry</td><td>30-90 days</td><td class="highlight-col"><strong>Never expire</strong> <i class="fa-solid fa-infinity fa-xs"></i></td></tr>
-        <tr><td>Payment</td><td>Card only</td><td class="highlight-col"><strong>BTC / USDT / ETH</strong></td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section id="features" class="section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-bolt"></i> Features</div>
-    <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
-    <p class="section-desc">Purpose-built for automation engineers who need reliable, fast, and affordable captcha solving.</p>
-  </div>
+<section id="features">
+  <h2 class="section-title">Built for performance</h2>
+  <p class="section-desc">Every component is optimized for speed, reliability, and cost efficiency.</p>
   <div class="features-grid">
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-brain"></i></div><h3>Custom AI Models</h3><p>EfficientNet architecture trained on 100K+ captcha images. Not a wrapper — our own models running on our own infrastructure.</p><div class="feature-metric">97% accuracy</div></div>
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-gauge-high"></i></div><h3>Instant Response</h3><p>Classification happens in-memory on optimized ONNX runtime. No queue, no polling, no waiting. Request in, answer out.</p><div class="feature-metric">&lt;50ms avg</div></div>
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-plug"></i></div><h3>Zero Migration</h3><p>Same JSON format as major providers. Change two lines in your code (URL + key) and you're live. We handle the rest.</p><div class="feature-metric">2 min setup</div></div>
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Encrypted &amp; Secure</h3><p>HTTPS everywhere, API key auth, per-key rate limits, and credit-based access. Your images are never stored or logged.</p><div class="feature-metric">TLS 1.3</div></div>
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-arrow-up-right-dots"></i></div><h3>Scale Without Limits</h3><p>From 100 solves to 100,000 — same speed, same accuracy. Our infrastructure scales with your needs automatically.</p><div class="feature-metric"><i class="fa-solid fa-infinity fa-xs"></i> scalable</div></div>
-    <div class="feature-card card-glow"><div class="feature-icon"><i class="fa-solid fa-wallet"></i></div><h3>Pay What You Use</h3><p>No subscriptions, no monthly fees. Buy credits, use them whenever. Failed solves don't cost you a credit.</p><div class="feature-metric">From $0.003</div></div>
+    <div class="feature">
+      <i class="fa-solid fa-microchip"></i>
+      <h3>100% Local AI</h3>
+      <p>All models run on our own infrastructure. No external API calls, no per-solve fees from third parties. Your data never leaves our servers.</p>
+    </div>
+    <div class="feature">
+      <i class="fa-solid fa-bolt"></i>
+      <h3>Sub-100ms Response</h3>
+      <p>EfficientNet-B0 architecture optimized with ONNX Runtime. Classification tasks resolve in under 100 milliseconds.</p>
+    </div>
+    <div class="feature">
+      <i class="fa-solid fa-arrows-rotate"></i>
+      <h3>Drop-in Replacement</h3>
+      <p>Same JSON format as major providers. Change the base URL and API key — your existing code works without modifications.</p>
+    </div>
+    <div class="feature">
+      <i class="fa-solid fa-lock"></i>
+      <h3>Secure by Default</h3>
+      <p>HTTPS encryption, API key authentication, credit-based billing, rate limiting, and firewall protection on all endpoints.</p>
+    </div>
+    <div class="feature">
+      <i class="fa-solid fa-coins"></i>
+      <h3>Credit System</h3>
+      <p>Pay only for what you use. Each successful solve deducts one credit. Monitor your balance via the API in real-time.</p>
+    </div>
+    <div class="feature">
+      <i class="fa-solid fa-chart-line"></i>
+      <h3>Always Improving</h3>
+      <p>Models are continuously retrained with fresh data. New captcha types added regularly. Your accuracy only goes up.</p>
+    </div>
   </div>
 </section>
 
-<section id="how-it-works" class="section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-rocket"></i> How It Works</div>
-    <h2 class="section-title">Three steps. Sixty seconds.</h2>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="step-num">01</div><div class="step-content"><h3>Get Your API Key</h3><p>Contact us on Telegram, choose a plan, and receive your unique API key instantly.</p></div></div>
-    <div class="step-connector"></div>
-    <div class="step"><div class="step-num">02</div><div class="step-content"><h3>Send Your Captcha</h3><p>POST your base64-encoded captcha images to our API with the target question.</p></div></div>
-    <div class="step-connector"></div>
-    <div class="step"><div class="step-num">03</div><div class="step-content"><h3>Get Instant Results</h3><p>Receive a boolean array telling you exactly which tiles match — in under 50ms.</p></div></div>
-  </div>
-  <div class="code-section">
-    <div class="code-tabs">
-      <button class="code-tab active" onclick="switchLang(this,'python')">Python</button>
-      <button class="code-tab" onclick="switchLang(this,'javascript')">JavaScript</button>
-      <button class="code-tab" onclick="switchLang(this,'curl')">cURL</button>
+<section>
+  <h2 class="section-title">Three lines of code</h2>
+  <p class="section-desc">Integrate in minutes. Here's all you need.</p>
+  <div class="demo">
+    <div class="demo-header">
+      <div class="demo-dot r"></div><div class="demo-dot y"></div><div class="demo-dot g"></div>
+      <span class="demo-title">solve.py</span>
     </div>
-    <div class="code-block" id="code-python">
-      <div class="code-header"><span>solve.py</span><button onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button></div>
-<pre><code><span class="c"># pip install requests</span>
-<span class="k">import</span> requests, base64
+    <pre><code><span class="k">import</span> requests, base64
 
-<span class="c"># Encode captcha tile images</span>
-images_b64 = []
-<span class="k">for</span> path <span class="k">in</span> tile_paths:
-    <span class="k">with</span> <span class="fn">open</span>(path, <span class="s">"rb"</span>) <span class="k">as</span> f:
-        images_b64.append(base64.b64encode(f.read()).decode())
+<span class="c"># Encode your captcha images</span>
+images = [base64.b64encode(open(f, <span class="s">"rb"</span>).read()).decode() <span class="k">for</span> f <span class="k">in</span> tile_files]
 
 <span class="c"># Solve with NextSolver</span>
-response = requests.post(<span class="s">"https://strangerchk.online/createTask"</span>, json={
+result = requests.post(<span class="s">"https://strangerchk.online/createTask"</span>, json={
     <span class="s">"clientKey"</span>: <span class="s">"YOUR_API_KEY"</span>,
     <span class="s">"task"</span>: {
         <span class="s">"type"</span>: <span class="s">"AwsWafClassification"</span>,
-        <span class="s">"images"</span>: images_b64,
+        <span class="s">"images"</span>: images,
         <span class="s">"question"</span>: <span class="s">"umbrella"</span>
     }
 }).json()
 
-<span class="c"># Instant result — no polling needed!</span>
-<span class="fn">print</span>(response[<span class="s">"solution"</span>][<span class="s">"objects"</span>])
-<span class="c"># [False, True, False, False, True, False]</span>
-<span class="fn">print</span>(<span class="s">f"Solved in </span>{response[<span class="s">'solution'</span>][<span class="s">'time_ms'</span>]:.0f}ms<span class="s">"</span>)
-<span class="c"># Solved in 47ms</span></code></pre>
-    </div>
-    <div class="code-block" id="code-javascript" style="display:none">
-      <div class="code-header"><span>solve.js</span><button onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button></div>
-<pre><code><span class="k">const</span> response = <span class="k">await</span> <span class="fn">fetch</span>(<span class="s">'https://strangerchk.online/createTask'</span>, {
-  method: <span class="s">'POST'</span>,
-  headers: { <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span> },
-  body: JSON.stringify({
-    clientKey: <span class="s">'YOUR_API_KEY'</span>,
-    task: {
-      type: <span class="s">'AwsWafClassification'</span>,
-      images: [base64Img1, base64Img2, base64Img3],
-      question: <span class="s">'umbrella'</span>
-    }
-  })
-});
-
-<span class="k">const</span> data = <span class="k">await</span> response.json();
-console.log(data.solution.objects);
-<span class="c">// [false, true, false, false, true, false]</span></code></pre>
-    </div>
-    <div class="code-block" id="code-curl" style="display:none">
-      <div class="code-header"><span>terminal</span><button onclick="copyCode(this)"><i class="fa-regular fa-clipboard"></i> Copy</button></div>
-<pre><code>curl -X POST https://strangerchk.online/createTask \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{
-    "clientKey": "YOUR_API_KEY",
-    "task": {
-      "type": "AwsWafClassification",
-      "images": ["BASE64_IMG_1", "BASE64_IMG_2"],
-      "question": "umbrella"
-    }
-  }'</span>
-
-<span class="c"># Response:</span>
-<span class="c"># {"status":"ready","solution":{"objects":[false,true],"time_ms":47}}</span></code></pre>
-    </div>
+<span class="k">print</span>(result[<span class="s">"solution"</span>][<span class="s">"objects"</span>])  <span class="c"># [false, true, false, true, false, false]</span>
+<span class="k">print</span>(f<span class="s">"Solved in {result['solution']['time_ms']:.0f}ms"</span>)  <span class="c"># Solved in 48ms</span></code></pre>
   </div>
 </section>
 
-<section id="pricing" class="section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-gem"></i> Pricing</div>
-    <h2 class="section-title">Transparent pricing.<br>No surprises.</h2>
-    <p class="section-desc">Buy credits, use them whenever. No subscriptions, no expiry, no hidden fees. Failed solves are free.</p>
-  </div>
+<section id="pricing">
+  <h2 class="section-title">Simple, transparent pricing</h2>
+  <p class="section-desc">No hidden fees. No subscriptions. Pay per solve.</p>
   <div class="pricing-grid">
     <div class="price-card">
-      <div class="plan-badge">STARTER</div>
-      <div class="plan-price"><span class="currency">$</span>5</div>
-      <div class="plan-solves">1,000 solves</div>
-      <div class="plan-per">$0.005 per solve</div>
-      <ul><li>AWS WAF Grid Solver</li><li>97% accuracy</li><li>API key included</li><li>Credits never expire</li><li>Email support</li></ul>
-      <a href="#contact" class="plan-btn">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+      <h3>Starter</h3>
+      <div class="price">$5 <span>/ 1,000 solves</span></div>
+      <p class="price-desc">Perfect for testing and small projects</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> All captcha types included</li>
+        <li><i class="fa-solid fa-check"></i> API key with credit tracking</li>
+        <li><i class="fa-solid fa-check"></i> Standard support</li>
+        <li><i class="fa-solid fa-check"></i> No expiration</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center">Get Started</a>
     </div>
     <div class="price-card featured">
-      <div class="featured-tag"><i class="fa-solid fa-star"></i> BEST VALUE</div>
-      <div class="plan-badge">PROFESSIONAL</div>
-      <div class="plan-price"><span class="currency">$</span>20</div>
-      <div class="plan-solves">5,000 solves</div>
-      <div class="plan-per">$0.004 per solve — <span class="save">Save 20%</span></div>
-      <ul><li>Everything in Starter</li><li>Priority support</li><li>Higher rate limits</li><li>Usage analytics</li><li>Telegram support</li></ul>
-      <a href="#contact" class="plan-btn primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+      <h3>Pro</h3>
+      <div class="price">$20 <span>/ 10,000 solves</span></div>
+      <p class="price-desc">Best value for production workloads</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> All captcha types included</li>
+        <li><i class="fa-solid fa-check"></i> Priority support</li>
+        <li><i class="fa-solid fa-check"></i> Usage analytics</li>
+        <li><i class="fa-solid fa-check"></i> 50% savings vs Starter</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center">Get Started</a>
     </div>
     <div class="price-card">
-      <div class="plan-badge">ENTERPRISE</div>
-      <div class="plan-price"><span class="currency">$</span>75</div>
-      <div class="plan-solves">25,000 solves</div>
-      <div class="plan-per">$0.003 per solve — <span class="save">Save 40%</span></div>
-      <ul><li>Everything in Pro</li><li>Dedicated support</li><li>Custom rate limits</li><li>SLA guarantee</li><li>Volume discounts</li></ul>
-      <a href="#contact" class="plan-btn">Contact Us <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-  </div>
-  <div class="payment-methods">
-    <p>Accepted payments</p>
-    <div class="payment-icons">
-      <div class="pay-chip"><i class="fa-brands fa-bitcoin"></i> Bitcoin</div>
-      <div class="pay-chip"><i class="fa-solid fa-dollar-sign"></i> USDT (TRC20)</div>
-      <div class="pay-chip"><i class="fa-brands fa-ethereum"></i> Ethereum</div>
-      <div class="pay-chip"><i class="fa-solid fa-coins"></i> Solana</div>
+      <h3>Enterprise</h3>
+      <div class="price">$80 <span>/ 100,000 solves</span></div>
+      <p class="price-desc">For high-volume automation</p>
+      <ul>
+        <li><i class="fa-solid fa-check"></i> All captcha types included</li>
+        <li><i class="fa-solid fa-check"></i> Dedicated support channel</li>
+        <li><i class="fa-solid fa-check"></i> Custom rate limits</li>
+        <li><i class="fa-solid fa-check"></i> 84% savings vs Starter</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center">Contact Us</a>
     </div>
   </div>
 </section>
 
-<section id="supported" class="section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-crosshairs"></i> Supported Captchas</div>
-    <h2 class="section-title">Growing every week.</h2>
-    <p class="section-desc">We're constantly training new AI models. More captcha types coming soon.</p>
-  </div>
-  <div class="captcha-grid">
-    <div class="captcha-card live"><div class="captcha-status"><i class="fa-solid fa-circle fa-xs"></i> LIVE</div><div class="captcha-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>AWS WAF Grid</h3><p>13 object classes, 97% accuracy, &lt;50ms</p><div class="captcha-classes">bag &middot; bed &middot; belts &middot; binocular &middot; bucket &middot; clock &middot; fork &middot; hat &middot; scissors &middot; seat &middot; spoon &middot; suitcase &middot; umbrella</div></div>
-    <div class="captcha-card soon"><div class="captcha-status coming"><i class="fa-solid fa-circle-half-stroke fa-xs"></i> COMING SOON</div><div class="captcha-icon"><i class="fa-solid fa-rotate"></i></div><h3>reCAPTCHA v2</h3><p>Image classification — currently in training</p></div>
-    <div class="captcha-card soon"><div class="captcha-status coming"><i class="fa-solid fa-circle-half-stroke fa-xs"></i> COMING SOON</div><div class="captcha-icon"><i class="fa-solid fa-gamepad"></i></div><h3>Arkose FunCaptcha</h3><p>Rotation &amp; tile matching — in development</p></div>
-    <div class="captcha-card soon"><div class="captcha-status coming"><i class="fa-solid fa-circle-half-stroke fa-xs"></i> COMING SOON</div><div class="captcha-icon"><i class="fa-solid fa-cloud"></i></div><h3>Turnstile</h3><p>Cloudflare challenge — planned</p></div>
-  </div>
-</section>
-
-<section class="section trust-section">
-  <div class="section-center">
-    <div class="section-label"><i class="fa-solid fa-trophy"></i> Trusted</div>
-    <h2 class="section-title">Built by engineers,<br>for engineers.</h2>
-  </div>
-  <div class="trust-grid">
-    <div class="trust-card"><div class="trust-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="trust-quote">"Switched from CapSolver and cut our costs by 60%. The speed difference is insane — 50ms vs 3 seconds."</div><div class="trust-author"><i class="fa-solid fa-user-gear"></i> Automation Developer</div></div>
-    <div class="trust-card"><div class="trust-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="trust-quote">"Drop-in replacement. Changed the URL, changed the key, everything worked. Took literally 2 minutes."</div><div class="trust-author"><i class="fa-solid fa-code"></i> Bot Developer</div></div>
-    <div class="trust-card"><div class="trust-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><div class="trust-quote">"97% accuracy on WAF grids is no joke. We went from 85% with our old provider to 97% overnight."</div><div class="trust-author"><i class="fa-solid fa-spider"></i> Scraping Engineer</div></div>
-  </div>
-</section>
-
-<section id="contact" class="section cta-section">
-  <div class="cta-box">
-    <div class="cta-glow"></div>
-    <h2>Ready to solve captchas<br><span class="gradient-text">at machine speed?</span></h2>
-    <p>Get your API key in minutes. Start saving money today.</p>
-    <div class="cta-actions">
-      <a href="https://t.me/StrangerChk" target="_blank" class="btn btn-glow btn-lg"><span class="btn-shine"></span><i class="fa-brands fa-telegram"></i> Get API Key on Telegram</a>
-      <a href="https://strangerchk.online/docs-api" target="_blank" class="btn btn-ghost btn-lg"><i class="fa-solid fa-book-open"></i> Read the Docs</a>
-    </div>
-    <div class="cta-note">No signup required &middot; Instant delivery &middot; Crypto accepted</div>
+<section id="contact" style="text-align:center">
+  <h2 class="section-title">Ready to start?</h2>
+  <p class="section-desc">Get your API key and start solving captchas in minutes.</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="/docs-api" class="btn-primary"><i class="fa-solid fa-book"></i> Read the Docs</a>
+    <a href="https://t.me/StrangerChk" class="btn-secondary" target="_blank"><i class="fa-brands fa-telegram"></i> Contact on Telegram</a>
   </div>
 </section>
 
 <footer>
-  <div class="footer-inner">
-    <div class="footer-brand"><div class="logo"><i class="fa-solid fa-bolt logo-icon"></i> NextSolver</div><p>AI-powered captcha solving API.</p></div>
-    <div class="footer-links">
-      <div class="footer-col"><h4>Product</h4><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#supported">Supported Captchas</a></div>
-      <div class="footer-col"><h4>Developers</h4><a href="https://strangerchk.online/docs-api" target="_blank">API Documentation</a><a href="#how-it-works">Integration Guide</a><a href="https://strangerchk.online/health" target="_blank">API Status</a></div>
-      <div class="footer-col"><h4>Contact</h4><a href="https://t.me/StrangerChk" target="_blank"><i class="fa-brands fa-telegram"></i> Telegram</a><a href="#contact">Get API Key</a></div>
-    </div>
-  </div>
-  <div class="footer-bottom"><p>&copy; 2026 NextSolver. All rights reserved.</p></div>
+  <p><i class="fa-solid fa-bolt" style="color:var(--accent2)"></i> NextSolver &copy; 2026 — AI-Powered Captcha Solving</p>
 </footer>
 
-<script>
-let count=12847;setInterval(()=>{count+=Math.floor(Math.random()*3)+1;const el=document.getElementById('solves-counter');if(el)el.textContent=count.toLocaleString()},3000);
-function switchLang(btn,lang){document.querySelectorAll('.code-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.code-block').forEach(b=>b.style.display='none');btn.classList.add('active');document.getElementById('code-'+lang).style.display='block'}
-function copyCode(btn){const code=btn.closest('.code-block').querySelector('code').textContent;navigator.clipboard.writeText(code);const icon=btn.querySelector('i');icon.className='fa-solid fa-check';btn.lastChild.textContent=' Copied!';setTimeout(()=>{icon.className='fa-regular fa-clipboard';btn.lastChild.textContent=' Copy'},2000)}
-const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});document.querySelectorAll('.feature-card,.price-card,.step,.captcha-card,.trust-card').forEach(el=>observer.observe(el));
-</script>
 </body>
 </html>
